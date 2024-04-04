@@ -15,6 +15,7 @@ public class Game {
 
 
     private void StartGame(){
+        System.out.println("start of StartGame");
         Scanner reader = new Scanner(System.in); // Create a scanner object for user input
         System.out.println("\n\n ======================================NEW GAME====================================== \n");
 
