@@ -7,29 +7,33 @@ public class Player {
     static Scanner reader = new Scanner(System.in); // Create a scanner object for user input
     int numMoves = 0;
 
-    public static double[] choice() {
+    Board board;
+
+    public double[] choice() {
 
         boolean success = false;
-        int row = 0;
+        int row;
         int col;
-        Board board = null;
 
         do {
-            System.out.println("Which column would you like to pick?: "); // Prompt user for the number of surfaces
+            row = 0;
+            col = 0;
+            System.out.println("Which row would you like to pick?: "); // Prompt user for the number of surfaces
             try {
                 row = reader.nextInt(); // Read user input
+                row--;
             } catch (Exception e) {
-                System.out.println("Invalid input for number of " + row + "s. Please enter a valid input.");
+                System.out.println("Invalid input please enter a number that is in the scope of the grid.");
                 return new double[]{0, 0}; // Exit method if input is invalid
             }
 
 
             System.out.println("Which column would you like to pick?: "); // Prompt user for the number of surfaces
-            col = 0;
             try {
                 col = reader.nextInt(); // Read user input
+                col--;
             } catch (Exception e) {
-                System.out.println("Invalid input for number of " + col + "s. Please enter a valid integer.");
+                System.out.println("Invalid input please enter a number that is in the scope of the grid.");
                 return new double[]{0, 0}; // Exit method if input is invalid
             }
 

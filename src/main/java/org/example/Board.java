@@ -4,9 +4,9 @@ import org.w3c.dom.ls.LSOutput;
 import java.util.Random;
 
 public class Board {
-    int numRows = 6;
-    int numCols = 6;
-    int numMines = 6;
+    int numRows = 10;
+    int numCols = 10;
+    int numMines = 5;
 
     Tile[][] grid;
 
@@ -34,7 +34,7 @@ public class Board {
             Random r = new Random();
             int row = r.nextInt(numRows);
             int col = r.nextInt(numCols);
-            if (grid[row][col].isMine() == false){
+            if (!grid[row][col].isMine()){
                 grid[row][col].isMine = true;
                 Placed++;
             }
@@ -53,7 +53,7 @@ public class Board {
                         int newRow = i + k;
                         int newCol = j + l;
                         if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols) {
-                            if (grid[i+k][j+l].isMine = true) {
+                            if (grid[i+k][j+l].isMine) {
                                 BOMBS++;
                             }
                         }

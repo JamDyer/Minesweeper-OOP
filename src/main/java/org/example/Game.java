@@ -15,16 +15,17 @@ public class Game {
 
 
     private void StartGame(){
-        System.out.println("start of StartGame");
         Scanner reader = new Scanner(System.in); // Create a scanner object for user input
         System.out.println("\n\n ======================================NEW GAME====================================== \n");
+
+        Player player = new Player();
+        player.board = board;
 
         while(!gameWon && !gameLost){
 
             DisplayBoard();
 
-            double[] Choice = Player.choice();
-            Player player = null;
+            double[] Choice = player.choice();
             player.numMoves++;
 
             int row = (int) Choice[0];
@@ -34,7 +35,7 @@ public class Game {
 
             if (Selected.isMine){
                 gameLost = true;
-                System.out.println("\n\n BOOOOOOOOOOOM!!! \n\n GAME OVER YOU HIT A MINE!");
+                System.out.println("\n\n BOOOOOOOOOOOM!!! \n GAME OVER YOU HIT A MINE! \n\n");
             } else {
                 Selected.reveal();
 
@@ -52,19 +53,19 @@ public class Game {
 
         Tile[][] grid = board.getGrid();
 
-        System.out.println("  | ");
-        for (int i = 1; i < board.numCols; i++) {
-            System.out.printf("%d, ", i);
+        System.out.print("   | ");
+        for (int i = 1; i <= board.numCols; i++) {
+            System.out.printf("%d ", i);
         }
 
         System.out.print("\n --+");
-        for (int i = 1; i < board.numCols; i++) {
+        for (int i = 1; i <= board.numCols; i++) {
             System.out.print("--");
         }
 
         for (int i = 0; i < board.numRows; i++) {
 
-            System.out.printf("\n %d, | ", i);
+            System.out.printf("\n %d | ", i + 1);
 
             for (int j = 0; j < board.numCols; j++) {
 
@@ -79,7 +80,7 @@ public class Game {
                     }
                 }
                 else{
-                    System.out.print("?");
+                    System.out.print("? ");
                 }
 
             }
