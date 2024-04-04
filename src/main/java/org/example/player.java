@@ -4,19 +4,20 @@ import java.util.Scanner;
 
 public class player {
 
-    Scanner reader = new Scanner(System.in); // Create a scanner object for user input
+    static Scanner reader = new Scanner(System.in); // Create a scanner object for user input
     int numMoves = 0;
 
-    public double[] choice() {
+    public static double[] choice() {
 
         boolean success = false;
-        String row = null;
-        int col = 0;
+        int row = 0;
+        int col;
+        Board board = null;
 
         do {
             System.out.println("Which column would you like to pick?: "); // Prompt user for the number of surfaces
             try {
-                row = reader.next(); // Read user input
+                row = reader.nextInt(); // Read user input
             } catch (Exception e) {
                 System.out.println("Invalid input for number of " + row + "s. Please enter a valid input.");
                 return new double[]{0, 0}; // Exit method if input is invalid
@@ -31,10 +32,15 @@ public class player {
                 System.out.println("Invalid input for number of " + col + "s. Please enter a valid integer.");
                 return new double[]{0, 0}; // Exit method if input is invalid
             }
-            success = true;
-        } while (success == false);
 
-        // need to make sure that the row is transfered to a number using a dictionary
+            if (row < 0 || row >= board.numRows || col < 0 || col >= board.numCols) {
+                System.out.println("Invalid input. Try again.");
+                continue;
+            }
+            success = true;
+        } while (!success);
+
+        // need to make sure that the row is transferred to a number using a dictionary
         return new double[] {row, col}; // Return the total dimension cost
 
     }
