@@ -2,7 +2,7 @@ package org.example;
 import java.util.Hashtable;
 import java.util.Scanner;
 
-public class player {
+public class Player {
 
     static Scanner reader = new Scanner(System.in); // Create a scanner object for user input
     int numMoves = 0;

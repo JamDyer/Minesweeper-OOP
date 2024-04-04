@@ -3,9 +3,9 @@ import java.util.Random;
 
 public class Board {
 
-    int numRows = 0;
-    int numCols = 0;
-    int numMines = 0;
+    int numRows = 6;
+    int numCols = 6;
+    int numMines = 6;
 
     Tile[][] grid;
 
@@ -18,6 +18,8 @@ public class Board {
 
 
     private void initialise(){
+        grid = new Tile[numRows][numCols];
+
         for (int i = 0; i <= numRows; i++){
             for (int j = 0; j <= numCols; ++j){
                 grid[i][j] = new Tile();
@@ -60,4 +62,7 @@ public class Board {
         }
     }
 
+    public Tile[][] getGrid() {
+        return grid;
+    }
 }

@@ -22,8 +22,8 @@ public class Game {
 
             DisplayBoard();
 
-            double[] Choice = player.choice();
-            player player = null;
+            double[] Choice = Player.choice();
+            Player player = null;
             player.numMoves++;
 
             int row = (int) Choice[0];
@@ -43,17 +43,50 @@ public class Game {
                             "Game Won Congratulations");
                 }
             }
-
-
-
         }
-
     }
 
 
     private void DisplayBoard(){
 
-    }
+        Tile[][] grid = board.getGrid();
+
+        System.out.println("  | ");
+        for (int i = 1; i < board.numCols; i++) {
+            System.out.printf("%d, ", i);
+        }
+
+        System.out.print("\n --+");
+        for (int i = 1; i < board.numCols; i++) {
+            System.out.print("--");
+        }
+
+        for (int i = 0; i < board.numRows; i++) {
+
+            System.out.printf("\n %d, | ", i);
+
+            for (int j = 0; j < board.numCols; j++) {
+
+                Tile tile = grid[i][j];
+
+                if (tile.isRevealed){
+                    if (tile.isMine){
+                        System.out.print("* ");
+                    }
+                    else{
+                        System.out.printf("%d ", tile.neighbouringMines);
+                    }
+                }
+                else{
+                    System.out.print("?");
+                }
+
+            }
+        }
+        System.out.println(" ");
+
+
+        }
 
     private boolean IsGameWon(){
         for (int i = 0; i < board.numRows; i++){
