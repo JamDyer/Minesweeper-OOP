@@ -5,7 +5,6 @@ public class Tile {
     boolean isRevealed = false;
     boolean isFlagged = false;
     int neighbouringMines = 0;
-    private boolean mine;
 
     public void reveal(){
         isRevealed = true;
@@ -15,12 +14,9 @@ public class Tile {
         isFlagged = !isFlagged;
     }
 
-
     public boolean isMine() {
         return isMine;
     }
 
-    public void setMine(boolean mine) {
-        this.mine = mine;
-    }
+
 }

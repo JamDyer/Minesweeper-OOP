@@ -4,19 +4,18 @@ import org.w3c.dom.ls.LSOutput;
 import java.util.Random;
 
 public class Board {
-    int numRows = 10;
-    int numCols = 10;
-    int numMines = 5;
+    int numRows;
+    int numCols;
+    int numMines;
 
     Tile[][] grid;
 
 
-    public Board(){
+    public Board(int FirstMoveRow, int FirstMoveCol){
         initialise();
-        MinePlacer();
+        MinePlacer(FirstMoveRow, FirstMoveCol);
         neighbouringMines();
     }
-
 
     private void initialise(){
         grid = new Tile[numRows][numCols];
@@ -27,16 +26,19 @@ public class Board {
             }
         }
     }
-    private void MinePlacer(){
+    private void MinePlacer(int initialRow, int initialCol){
         int Placed = 0;
 
         while (Placed < numMines){
             Random r = new Random();
             int row = r.nextInt(numRows);
             int col = r.nextInt(numCols);
-            if (!grid[row][col].isMine()){
-                grid[row][col].isMine = true;
-                Placed++;
+
+            if (row != initialRow || col != initialCol) {
+                if (!grid[row][col].isMine()) {
+                    grid[row][col].isMine = true;
+                    Placed++;
+                }
             }
         }
     }
