@@ -1,5 +1,6 @@
 package org.example;
 import java.util.Hashtable;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Player {
@@ -19,24 +20,30 @@ public class Player {
         boolean success = false;
 
         do {
-            System.out.println("Which location would you like to pick?: "); // Prompt user for the number of surfaces
-            move = reader.next().toUpperCase(); // Read user input
+            System.out.println("Which location would you like to pick?: ");
+            move = reader.nextLine().trim().toUpperCase(); // Read user input, trim and make upper case.
 
-            if (!isValid(move)){
-                System.out.println("Invalid input. Please enter your x coordinate followed by your y coordinate and " +
-                        "then add an f only if you want a flag. \n For example: 35, 73f");
+            if (move.isEmpty()) {
+                System.out.println("Empty input. Please enter your move.");
+            } else if (!isValid(move)) {
+                System.out.println("Invalid input format. Please enter your coordinates followed by an optional 'f' for flagging.");
+                System.out.println("Example: A3 or B7f");
             } else {
+                try {
+                    row = fromBase36(move.charAt(1));
+                    col = fromBase36(move.charAt(0));
+                    flag = move.length() == 3 ? 1 : 0;
 
-                row = fromBase36(move.charAt(1));
-                col = fromBase36(move.charAt(0));
-                flag = move.length() == 3 ? 1 : 0;
-
-                if (row < 0 || row >= board.numRows+1 || col < 0 || col >= board.numCols+1) {
-                    System.out.println("Invalid input. Try again.");
-                    continue;
+                    if (row < 0 || row >= board.numRows || col < 0 || col >= board.numCols) {
+                        System.out.println("Coordinates out of bounds. Please try again.");
+                        continue;
+                    }
+                    success = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter valid integers for rows and columns.");
+                    reader.nextLine(); // Clear the scanner's buffer
                 }
             }
-            success = true;
         } while (!success);
 
         // need to make sure that the row is transferred to a number using a dictionary

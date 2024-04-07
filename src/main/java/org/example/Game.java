@@ -1,4 +1,5 @@
 package org.example;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Game {
@@ -8,22 +9,24 @@ public class Game {
 
     Board board;
 
-    public Game(){
-        board = new Board(1,1);
+    public Game() {
+        board = new Board(1, 1);
+        Difficulty();
         StartGame();
     }
 
 
-    private void StartGame(){
-        Difficulty();
+    private void StartGame() {
+
         Scanner reader = new Scanner(System.in); // Create a scanner object for user input
         System.out.println("\n\n ======================================NEW GAME====================================== \n");
 
         Player player = new Player();
         player.board = board;
         boolean FirstMove = true;
+        board.initialise();
 
-        while(!gameWon && !gameLost) {
+        while (!gameWon && !gameLost) {
 
             DisplayBoard();
 
@@ -31,7 +34,8 @@ public class Game {
             if (FirstMove) {
 
                 choice = player.choice();
-                board = new Board(choice[0], choice[1]);
+                board.MinePlacer(choice[0], choice[1]);
+                board.neighbouringMines();
                 FirstMove = false;
             } else {
                 choice = player.choice();
@@ -43,78 +47,103 @@ public class Game {
             int flag = choice[2];
 
             Tile Selected = board.grid[row][col];
+            Selected.reveal();
 
-            if (flag == 1){
+            if (flag == 1) {
                 Selected.flagToggle();
             } else {
 
                 if (Selected.isMine) {
                     gameLost = true;
-                    Selected.reveal();
                     DisplayBoard();
                     System.out.println("\n\n BOOOOOOOOOOOM!!! \n GAME OVER YOU HIT A MINE! \n\n");
                 } else {
-                    Selected.reveal();
                     if (Selected.neighbouringMines == 0) {
                         RevealNeighbours(row, col);
                     }
                 }
             }
-                if (IsGameWon()){
-                    gameWon = true;
-                    System.out.println("You've only gone and done it \n Bish bash bosh \n" +
-                            "Game Won Congratulations");
-                }
+            if (IsGameWon()) {
+                gameWon = true;
+                System.out.println("You've only gone and done it \n Bish bash bosh \n" +
+                        "Game Won Congratulations");
+            }
         }
     }
 
     private void Difficulty() {
         Scanner reader = new Scanner(System.in);
-        System.out.println("\n Which difficulty would you like to choose: \n" +
-                "1. Beginner (8 x 8 with 10 mines) \n" +
-                "2. Intermediate (16 x 16 with 40 mines) \n" +
-                "3. Expert (30 x 16 with 99 mines) \n" +
-                "4. Custom");
+        boolean success = false;
+        while (!success) {
+            System.out.println("\n Which difficulty would you like to choose: \n" +
+                    "1. Beginner (8 x 8 with 10 mines) \n" +
+                    "2. Intermediate (16 x 16 with 40 mines) \n" +
+                    "3. Expert (30 x 16 with 99 mines) \n" +
+                    "4. Custom");
 
-        String choice = reader.nextLine().toLowerCase();
-        switch (choice) {
-            case "beginner":
-            case "1":
-                board.numRows = 8;
-                board.numCols = 8;
-                board.numMines = 10;
-                break;
-            case "intermediate":
-            case "2":
-                board.numRows = 16;
-                board.numCols = 16;
-                board.numMines = 40;
-                break;
-            case "expert":
-            case "3":
-                board.numRows = 30;
-                board.numCols = 16;
-                board.numMines = 99;
-                break;
-            case "custom":
-            case "4":
-                System.out.println("Enter number of rows: ");
-                board.numRows = reader.nextInt();
-                System.out.println("Enter number of columns: ");
-                board.numCols = reader.nextInt();
-                System.out.println("Enter number of mines: ");
-                board.numMines = reader.nextInt();
-                break;
-            default:
-                System.out.println("Invalid choice. Please choose again.");
-                Difficulty();
-                break;
+            String choice = reader.nextLine().toLowerCase();
+            switch (choice) {
+                case "beginner":
+                case "1":
+                    board.numRows = 8;
+                    board.numCols = 8;
+                    board.numMines = 10;
+                    success = true;
+                    break;
+                case "intermediate":
+                case "2":
+                    board.numRows = 16;
+                    board.numCols = 16;
+                    board.numMines = 40;
+                    success = true;
+                    break;
+                case "expert":
+                case "3":
+                    board.numRows = 30;
+                    board.numCols = 16;
+                    board.numMines = 99;
+                    success = true;
+                    break;
+                case "custom":
+                case "4":
+                    try {
+                        System.out.println("Enter number of rows: ");
+                        board.numRows = reader.nextInt();
+                        System.out.println("Enter number of columns: ");
+                        board.numCols = reader.nextInt();
+                        boolean mining = false;
+                        while (!mining){
+                            System.out.println("Enter number of mines: ");
+                            board.numMines = reader.nextInt();
+                            int maxMines = board.numCols * board.numCols - 2;
+                            if (board.numMines > maxMines){
+                                System.out.println("Too many mines! That's suicide, please enter less mines");
+                            } else {
+                                mining = true;
+                            }
+                        }
+                        if ( board.numRows < 1 || board.numCols < 1 || board.numMines < 1 ){
+                            System.out.println("Invalid input. Please enter valid positive integers");
+                            reader.nextLine(); // Clear the scanner's buffer
+                        } else{
+                            System.out.println("Thank you for you board selections");
+                            success = true;
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter valid integers for rows, columns, and " +
+                                "mines if this is your choice.");
+                        reader.nextLine(); // Clear the scanner's buffer
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please choose again.");
+                    break;
+            }
         }
     }
 
 
-
-    private void DisplayBoard(){
+    private void DisplayBoard() {
 
         Tile[][] grid = board.getGrid();
 
@@ -130,26 +159,24 @@ public class Game {
 
         for (int i = 0; i < board.numRows; i++) {
 
-            System.out.printf("\n %c | ", Player.toBase36(i+1));
+            System.out.printf("\n %c | ", Player.toBase36(i + 1));
 
             for (int j = 0; j < board.numCols; j++) {
 
                 Tile tile = grid[i][j];
 
-                if (tile.isFlagged){
+                if (tile.isFlagged) {
                     System.out.print("F ");
                     continue;
                 }
 
-                if (tile.isRevealed){
-                    if (tile.isMine){
+                if (tile.isRevealed) {
+                    if (tile.isMine) {
                         System.out.print("* ");
-                    }
-                    else{
+                    } else {
                         System.out.printf("%d ", tile.neighbouringMines);
                     }
-                }
-                else{
+                } else {
                     System.out.print("? ");
                 }
 
@@ -158,14 +185,14 @@ public class Game {
         System.out.println(" ");
 
 
-        }
+    }
 
-    private boolean IsGameWon(){
-        for (int i = 0; i < board.numRows; i++){
-            for (int j = 0; j < board.numCols; j++){
+    private boolean IsGameWon() {
+        for (int i = 0; i < board.numRows; i++) {
+            for (int j = 0; j < board.numCols; j++) {
 
                 Tile pick = board.grid[i][j];
-                if (!pick.isRevealed && !pick.isMine){
+                if (!pick.isRevealed && !pick.isMine) {
                     return false;
                 }
 
@@ -187,7 +214,7 @@ public class Game {
                     if (CurrentTile.neighbouringMines == 0 && !CurrentTile.isRevealed) {
                         CurrentTile.reveal();
                         RevealNeighbours(newRow, newCol);
-                    } else{
+                    } else {
                         CurrentTile.reveal();
                     }
                 }
