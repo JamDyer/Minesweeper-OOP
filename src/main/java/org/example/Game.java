@@ -7,11 +7,12 @@ public class Game {
     boolean gameWon = false;
     boolean gameLost = false;
 
-    Board board;
+    Board board; // reference the game board
+    Player player;
 
-    public Game() {
+    public Game() { // Runs the actual game
         board = new Board(1, 1);
-        Difficulty();
+        Difficulty(); // Gets the dimensions of the board
         StartGame();
     }
 
@@ -24,14 +25,23 @@ public class Game {
         Player player = new Player();
         player.board = board;
         boolean FirstMove = true;
-        board.initialise();
+        board.initialise(); // Builds the board so that it can be visualised for the user
+        int flags = board.numMines;
 
-        while (!gameWon && !gameLost) {
+        while (!gameWon && !gameLost) { // Runs loop so user can make continuous moves
 
-            DisplayBoard();
+            DisplayBoard(); // Shows the board to the user
+
+            System.out.printf("\nNumber of turns: %d, Number of flags: %d\n", player.numMoves, flags);
+            System.out.println(" ");
+
 
             int[] choice;
-            if (FirstMove) {
+            if (FirstMove) { // If it is the first move the players first move is chosen and then the
+                // mines are placed around this. The values of each square are then also created
+
+                System.out.println("Please enter your coordinates followed by an optional 'f' for flagging.");
+                System.out.println("Example: A3 or B7f \n");
 
                 choice = player.choice();
                 board.MinePlacer(choice[0], choice[1]);
@@ -50,28 +60,35 @@ public class Game {
             Selected.reveal();
 
             if (flag == 1) {
-                Selected.flagToggle();
+                Selected.flagToggle(); // Toggle flag on selected tile
+                if (Selected.isFlagged){
+                    flags--;
+                } else {
+                    flags++;
+                }
             } else {
 
                 if (Selected.isMine) {
                     gameLost = true;
-                    DisplayBoard();
-                    System.out.println("\n\n BOOOOOOOOOOOM!!! \n GAME OVER YOU HIT A MINE! \n\n");
+                    DisplayBoard(); // Display all tiles
+                    displayGameOverScreen();
+                    System.out.println("\n You have hit a mine and so have lost"); // Tell the user if they lost
                 } else {
                     if (Selected.neighbouringMines == 0) {
                         RevealNeighbours(row, col);
                     }
                 }
             }
-            if (IsGameWon()) {
+            if (IsGameWon()) { // Tell the user if they lost
                 gameWon = true;
-                System.out.println("You've only gone and done it \n Bish bash bosh \n" +
-                        "Game Won Congratulations");
+                WinnerArt();
+                System.out.println("YOU HAVE CLEARED ALL THE TILES! \n WELL DONE");
             }
         }
+
     }
 
-    private void Difficulty() {
+    private void Difficulty() { // Choose the difficulty aka size and amount of mines
         Scanner reader = new Scanner(System.in);
         boolean success = false;
         while (!success) {
@@ -143,7 +160,7 @@ public class Game {
     }
 
 
-    private void DisplayBoard() {
+    private void DisplayBoard() { //Displays the current state of the board
 
         Tile[][] grid = board.getGrid();
 
@@ -179,15 +196,12 @@ public class Game {
                 } else {
                     System.out.print("? ");
                 }
-
             }
         }
         System.out.println(" ");
-
-
     }
 
-    private boolean IsGameWon() {
+    private boolean IsGameWon() { // Checks if the game is won
         for (int i = 0; i < board.numRows; i++) {
             for (int j = 0; j < board.numCols; j++) {
 
@@ -201,7 +215,7 @@ public class Game {
         return true;
     }
 
-    private void RevealNeighbours(int row, int col) {
+    private void RevealNeighbours(int row, int col) { // Puts the value of on each tile of No. neighbouring bombs
 
         Tile[][] grid = board.getGrid();
 
@@ -220,6 +234,37 @@ public class Game {
                 }
             }
         }
+    }
+
+    private void displayGameOverScreen() {
+        System.out.println("      _ ._  _ , _ ._");
+        System.out.println("    (_ ' ( `  )_  .__)");
+        System.out.println("  ( (  (    )   `)  ) _)");
+        System.out.println(" (__ (_   (_ . _) _) ,__)");
+        System.out.println("      `~~`\\ ' . /`~~`");
+        System.out.println("           ;   ;");
+        System.out.println("           /   \\");
+        System.out.println("___________|___|_________");
+        System.out.println("  _____          __  __ ______    ______      ________ _____  ");
+        System.out.println(" / ____|   /\\   |  \\/  |  ____|  / __ \\ \\    / /  ____|  __ \\ ");
+        System.out.println("| |  __   /  \\  | \\  / | |__    | |  | \\ \\  / /| |__  | |__) |");
+        System.out.println("| | |_ | / /\\ \\ | |\\/| |  __|   | |  | |\\ \\/ / |  __| |  _  / ");
+        System.out.println("| |__| |/ ____ \\| |  | | |____  | |__| | \\  /  | |____| | \\ \\ ");
+        System.out.println(" \\_____/_/    \\_\\_|  |_|______|  \\____/   \\/   |______|_|  \\_\\");
+        System.out.println("                                                                ");
+
+    }
+
+    public static void WinnerArt() {
+        // ASCII art for "Winner" message
+        String winnerArt =
+                "__        _____ _   _ _   _ _____ ____  _ \n" +
+                        "\\ \\      / /_ _| \\ | | \\ | | ____|  _ \\| |\n" +
+                        " \\ \\ /\\ / / | ||  \\| |  \\| |  _| | |_) | |\n" +
+                        "  \\ V  V /  | || |\\  | |\\  | |___|  _ <|_|\n" +
+                        "   \\_/\\_/  |___|_| \\_|_| \\_|_____|_| \\_(_)";
+
+        System.out.println(winnerArt);
     }
 }
 

@@ -1,6 +1,4 @@
 package org.example;
-import org.w3c.dom.ls.LSOutput;
-
 import java.util.Random;
 
 public class Board {
@@ -17,7 +15,7 @@ public class Board {
         //neighbouringMines();
     }
 
-    public void initialise(){
+    public void initialise(){ // Builds the grid using the row and column sizes
         grid = new Tile[numRows][numCols];
 
         for (int i = 0; i < numRows; i++){
@@ -26,7 +24,7 @@ public class Board {
             }
         }
     }
-    public void MinePlacer(int initialRow, int initialCol){
+    public void MinePlacer(int initialRow, int initialCol){ // Populates grid with mines
         int Placed = 0;
 
         while (Placed < numMines){
@@ -43,7 +41,7 @@ public class Board {
         }
     }
 
-    public void neighbouringMines(){
+    public void neighbouringMines(){ // Calculates surrounding mines
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; ++j) {
 

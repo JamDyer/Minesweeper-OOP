@@ -8,7 +8,7 @@ public class Player {
     static Scanner reader = new Scanner(System.in); // Create a scanner object for user input
     int numMoves = 0;
 
-    Board board;
+    Board board; // Reference game board
 
     int row;
     int col;
@@ -16,6 +16,10 @@ public class Player {
     String move;
 
     public int[] choice() {
+
+        // This method allows the player to choose a location on the game board.
+        // An array containing the row, column, and flag status of the chosen location is returned.
+
 
         boolean success = false;
 
@@ -27,14 +31,14 @@ public class Player {
                 System.out.println("Empty input. Please enter your move.");
             } else if (!isValid(move)) {
                 System.out.println("Invalid input format. Please enter your coordinates followed by an optional 'f' for flagging.");
-                System.out.println("Example: A3 or B7f");
+                System.out.println("Example: A3 or B7f"); // Returns informative information with errors
             } else {
                 try {
                     row = fromBase36(move.charAt(1));
                     col = fromBase36(move.charAt(0));
                     flag = move.length() == 3 ? 1 : 0;
 
-                    if (row < 0 || row >= board.numRows || col < 0 || col >= board.numCols) {
+                    if (row < 0 || row >= board.numRows+1 || col < 0 || col >= board.numCols+1) {
                         System.out.println("Coordinates out of bounds. Please try again.");
                         continue;
                     }
@@ -46,29 +50,28 @@ public class Player {
             }
         } while (!success);
 
-        // need to make sure that the row is transferred to a number using a dictionary
-        return new int[] {row - 1, col - 1, flag}; // Return the total dimension cost
+        return new int[] {row - 1, col - 1, flag}; // Return the location and if it is a flag
 
     }
 
-    public static boolean isValid(String move){
+    public static boolean isValid(String move){ // Method to check if the move is a valid move
         if (move.length() < 2 || move.length() > 3){
             return false;
         } else if (!isBase36(move.charAt(0)) || !isBase36(move.charAt(1))) {
             return false;
         }
-        return move.length() == 2 || move.charAt(2) == 'F';
+        return move.length() == 2 || move.charAt(2) == 'F'; // returns true if valid format and false otherwise
     }
 
-    public static boolean isBase36(char test){
+    public static boolean isBase36(char test){ // Checks if a character is a valid base 36 digit (0-9, A-Z).
         return (test >= '0' && test <= '9') || (test >= 'A' && test <= 'Z');
     }
 
-    public static int fromBase36(char num){
+    public static int fromBase36(char num){ // Converts a base 36 character to an integer.
         return num <= '9' ? (num - '0') : (num - 'A') + 10;
     }
 
-    public static char toBase36(int num){
+    public static char toBase36(int num){ // Converts an integer to a base 36 character.
         return (char)(num < 10 ? ('0' + num) : ('A' + (num - 10)));
     }
 }
