@@ -1,5 +1,4 @@
 package org.example;
-import java.util.Hashtable;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 

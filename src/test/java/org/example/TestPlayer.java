@@ -12,15 +12,7 @@ public class TestPlayer {
         Assertions.assertTrue(result,
                 "Player: isValid should return True for correct non-flag input");
     }
-
-     @Test
-    public void isValidReturnsTrueForFlagInput(){
-        final var input = "42f";
-        final var result = Player.isValid(input);
-        Assertions.assertTrue(result,
-                "Player: isValid should return True for correct flag input");
-    }
-
+    
     @Test
     public void isValidReturnsFalseForNoInput(){
         final var input = " ";

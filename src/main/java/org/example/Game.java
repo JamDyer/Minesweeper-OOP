@@ -68,6 +68,11 @@ public class Game {
                 }
             } else {
 
+                if (Selected.isFlagged){
+                    System.out.println("You cannot choose a space you've already flagged!!!");
+                    continue;
+                }
+
                 if (Selected.isMine) {
                     gameLost = true;
                     DisplayBoard(); // Display all tiles
@@ -79,7 +84,7 @@ public class Game {
                     }
                 }
             }
-            if (IsGameWon()) { // Tell the user if they lost
+            if (IsGameWon()) { // Tell the user if they won
                 gameWon = true;
                 WinnerArt();
                 System.out.println("YOU HAVE CLEARED ALL THE TILES! \n WELL DONE");
@@ -141,7 +146,10 @@ public class Game {
                         }
                         if ( board.numRows < 1 || board.numCols < 1 || board.numMines < 1 ){
                             System.out.println("Invalid input. Please enter valid positive integers");
-                            reader.nextLine(); // Clear the scanner's buffer
+                            reader.nextLine();
+                        } else if ( board.numRows > 36 || board.numCols < 36 ){
+                            System.out.println("Your grid is too big! Don't get ahead of yourself, make it smaller.");
+                            continue;
                         } else{
                             System.out.println("Thank you for you board selections");
                             success = true;
@@ -149,7 +157,7 @@ public class Game {
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input. Please enter valid integers for rows, columns, and " +
                                 "mines if this is your choice.");
-                        reader.nextLine(); // Clear the scanner's buffer
+                        reader.nextLine();
                     }
                     break;
                 default:
